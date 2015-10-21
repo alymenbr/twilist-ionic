@@ -68,6 +68,7 @@ angular.module('starter', ['ionic', 'ngCordovaOauth', 'ngTwitter'])
   $scope.showHomeTimeline = function() {
     $twitterApi.getHomeTimeline().then(function(data) {
       $scope.home_timeline = data;
+
     });
   };
 
@@ -85,4 +86,5 @@ angular.module('starter', ['ionic', 'ngCordovaOauth', 'ngTwitter'])
   $scope.correctTimestring = function(string) {
     return new Date(Date.parse(string));
   };
+
 });

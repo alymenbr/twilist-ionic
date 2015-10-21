@@ -12,6 +12,7 @@
     <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
     <link href="css/ionic.app.css" rel="stylesheet">
     -->
+    <script src="lib/tweetParser/tweetParser.min.js"></script>
 
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
@@ -46,15 +47,15 @@
 
         <div ng-show="home_timeline.length == 0">Loading tweets...</div>
 
-        <div ng-repeat="entry in home_timeline" class="list card">
-          <div class="item item-avatar">
+        <div ng-repeat="entry in home_timeline" class="list card" style="margin: 30px 5px 30px 5px;">
+          <div class="item item-avatar" style="background: #6AF;">
             <img ng-src="{{entry.user.profile_image_url}}"/>
-            <h2>{{entry.user.name}}</h2>
-            <p>{{correctTimestring(entry.created_at) | date:'medium'}}</p>
+            <h2 style="color: #FFF;">{{entry.user.name}}</h2>
+            <p style="color: #DDD;">{{correctTimestring(entry.created_at) | date:'medium'}}</p>
           </div>
 
-          <div class="item item-body">
-            <p ng-bind-html="entry.text"></p>
+          <div class="item item-body" style="padding: 4px 16px 0px 16px;">
+            <p ng-bind-html="entry.text" class="tweet" style="margin: 4px 0px 4px 0px;"></p>
             <img ng-if="entry.extended_entities" ng-src="{{ entry.extended_entities.media[0].media_url }}" style="width: 100%;"/>
           </div>
 
