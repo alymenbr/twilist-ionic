@@ -54,8 +54,8 @@
             <p style="color: #DDD;">{{correctTimestring(entry.created_at) | date:'medium'}}</p>
           </div>
 
-          <div class="item item-body" style="padding: 4px 16px 0px 16px;">
-            <p ng-bind-html="entry.text" class="tweet" style="margin: 4px 0px 4px 0px;"></p>
+          <div class="item item-body" style="padding: 0px;">
+            <p ng-bind-html="entry.text" class="tweet" style="margin: 4px 0px 4px 0px; padding: 4px 16px 0px 16px;"></p>
             <img ng-if="entry.extended_entities" ng-src="{{ entry.extended_entities.media[0].media_url }}" style="width: 100%;"/>
           </div>
 
