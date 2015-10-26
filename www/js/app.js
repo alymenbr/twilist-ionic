@@ -26,29 +26,12 @@ angular.module('starter', ['ionic', 'ngCordovaOauth', 'ngTwitter'])
   var clientId = 'w0TtlhxFEhYisSu0yWjlzFVk9';
   var clientSecret = 'UHoBcWQxZcX3JewnCklHpiYn4XjxUeus9qImiEAU0mIbx3E0rE';
 
-  var USER_LISTS_URL = 'https://api.twitter.com/1.1/lists/ownerships';
-  /*  PARAMS:
-        screen_name: myToken.screen_name
-      RESULT:
-        id
-        name
-  */
-
-
-  var LIST_FEED_URL = 'https://api.twitter.com/1.1/'; // list_id: {{id}}, include_entities: true, count: 10
-  /*  PARAMS:
-        list_id: {{id}},
-        include_entities: true,
-        count: 10
-      RESULT:
-        o de sempre
-  */
+  var USER_LISTS_URL = 'https://api.twitter.com/1.1/lists/ownerships.json';
+  var LIST_FEED_URL = 'https://api.twitter.com/1.1/lists/statuses.json'; // list_id: {{id}}, include_entities: true, count: 10
 
   var myToken = '';
-  // myToken.screen_name
-  // myToken.user_id
-
   $scope.tweet = {};
+  $scope.userLists = [];
 
   $ionicPlatform.ready(function() {
     myToken = JSON.parse(window.localStorage.getItem(twitterKey));
@@ -57,36 +40,16 @@ angular.module('starter', ['ionic', 'ngCordovaOauth', 'ngTwitter'])
         myToken = succ;
         window.localStorage.setItem(twitterKey, JSON.stringify(succ));
         $twitterApi.configure(clientId, clientSecret, succ);
-        $scope.showHomeTimeline();
+
+        $scope.getUserLists();
       }, function(error) {
         console.log(error);
       });
     } else {
       $twitterApi.configure(clientId, clientSecret, myToken);
-      $scope.showHomeTimeline();
+      $scope.getUserLists();
     }
   });
-
-  $scope.twitter = function () {
-      $ionicPlatform.ready(function() {
-        myToken = JSON.parse(window.localStorage.getItem(twitterKey));
-        if (myToken === '' || myToken === null) {
-          $cordovaOauth.twitter(clientId, clientSecret).then(function (succ) {
-            myToken = succ;
-            window.localStorage.setItem(twitterKey, JSON.stringify(succ));
-            $twitterApi.configure(clientId, clientSecret, succ);
-            $scope.showHomeTimeline();
-          }, function(error) {
-            console.log(error);
-          });
-        } else {
-          $twitterApi.configure(clientId, clientSecret, myToken);
-          $scope.showHomeTimeline();
-        }
-
-
-      });
-    };
 
   $scope.showHomeTimeline = function() {
     $twitterApi.getHomeTimeline().then(function(data) {
@@ -100,22 +63,30 @@ angular.module('starter', ['ionic', 'ngCordovaOauth', 'ngTwitter'])
     });
   }
 
-
-  $scope.doRefresh = function() {
-
+  $scope.getUserLists = function() {
     $twitterApi.getRequest(USER_LISTS_URL, {screen_name: myToken.screen_name}).then(function(data) {
-      console.log.( JSON.stringify(data) );
+      for (var i = 0; i < data.lists.length; i++) {
+        var newList = {id: data.lists[i].id, name: data.lists[i].name, tweets: []};
+        $scope.userLists.push(newList);
+        $scope.getListTweets(newList.id);
+      }
     });
+  }
 
-    $scope.$broadcast('scroll.refreshComplete');
-  };
+  $scope.getListTweets = function(listId) {
+    $twitterApi.getRequest(LIST_FEED_URL, {list_id: listId, include_entities: true, count: 10}).then(function(data) {
+      for (var i = 0; i < $scope.userLists.length; i++) {
+        if($scope.userLists[i].id === listId)
+          $scope.userLists[i].tweets = data;
+      }
+    });
+  }
 
-/*
   $scope.doRefresh = function() {
     $scope.showHomeTimeline();
     $scope.$broadcast('scroll.refreshComplete');
   };
-*/
+
   $scope.correctTimestring = function(string) {
     return new Date(Date.parse(string));
   };
