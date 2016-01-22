@@ -7,17 +7,18 @@ angular.module('starter', ['ionic', 'ngCordovaOauth', 'ngTwitter'])
 
 .config(function($ionicConfigProvider) {
     $ionicConfigProvider.tabs.position('top');
+    $ionicConfigProvider.scrolling.jsScrolling(false);
 })
 
 .run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
     // for form inputs)
-
+/*
     if(window.cordova && window.cordova.plugins.Keyboard) {
       cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
     }
-
+*/
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
@@ -34,7 +35,6 @@ angular.module('starter', ['ionic', 'ngCordovaOauth', 'ngTwitter'])
   var LIST_FEED_URL = 'https://api.twitter.com/1.1/lists/statuses.json'; // list_id: {{id}}, include_entities: true, count: 10
 
   var myToken = '';
-  $scope.tweet = {};
   $scope.userLists = [];
   $scope.tweets = [];
 
@@ -65,7 +65,7 @@ angular.module('starter', ['ionic', 'ngCordovaOauth', 'ngTwitter'])
   }
 
   $scope.onTabSelected = function(listId) {
-    $twitterApi.getRequest(LIST_FEED_URL, {list_id: listId, include_entities: true, count: 5}).then(function(data) {
+    $twitterApi.getRequest(LIST_FEED_URL, {list_id: listId, include_entities: true, count: 2}).then(function(data) {
           $scope.tweets = data;
           $scope.$broadcast('scroll.refreshComplete');
     });
